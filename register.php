@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 
   <head>
@@ -15,16 +16,35 @@
   </head>
 
   <body>
+  <div align="center">
+		<?php 	require_once 'connect.php';
+				if (isset($_POST['submit'])){
+				$username = $_POST['username'];
+				$password = $_POST['password'];
+				$sql = "SELECT * FROM `user` WHERE username='$username' and password='$password' and active=1";
+				$result = mysql_query($sql) or die(mysql_error());
+				$count = mysql_num_rows($result);
+				if ($count == 1){
+					echo "You are logged in";
+				} 
+				else {
+					echo "Login Failed";
+				}
+				} ?>
+	</div>
     <div class="nav">
       <div class="container">
         <ul class="pull-left">
-          <li><a href="http://localhost:8888/PowerliftingHub/index.html">Home</a></li>
-          <li><a href="#">Browse</a></li>
+          <li><a href="http://localhost:8888/PowerliftingHub/index.php">Home</a></li>
+          <li><a href="http://localhost:8888/PowerliftingHub/browse.php">Browse</a></li>
         </ul>
         <ul class="pull-right">
-          <li ><a href="#">Sign Up</a></li>
-          <li><a href="http://localhost:8888/PowerliftingHub/login.php">Log In</a></li>
-          <li><a href="#">Help</a></li>
+          <form action="" method="POST">
+          <li><span class="nav-login">Username: <input type="text" class="textbox" id="username" name="username" placeholder="username"/></span>
+          <li><span class="nav-login">Password: <input type="password" class="textbox" id="password" name="password" placeholder="password"/></span>
+          <li><input type="submit" name="submit" class="button" value="Login" />
+          <li><a href="http://localhost:8888/PowerliftingHub/register.php" size="8px">Sign Up</a></li>
+          </form>
         </ul>
       </div>
     </div>
@@ -39,6 +59,7 @@
 
 <?php	require('connect.php');
 		// If the values are posted, insert them into the database.
+		
 		$password = $_POST['password'];
 		$cpassword = $_POST['cpassword'];
 		
@@ -50,14 +71,22 @@
 		
 		if ((strlen($password) < 8) && (strlen($password) > 15)){
 			echo "<b>ERROR:</b> Password must be at least 8 characters";
+			echo "Please follow this link to return to registration: "."<a href=\"http://localhost:8888/PowerliftingHub/register.php\">Registration</a>";
+			exit;
 		}
 		
-		
-		if (isset($_POST['username']) && isset($_POST['password'])){
+		if (isset($_POST['submit'])){
 			$username = $_POST['username'];
 			$email = $_POST['email'];
 			$password = $_POST['password'];
-			$query = "INSERT INTO `user` (username, password, email) VALUES ('$username', '$password', '$email')";
+			$sex = $_POST['sex'];
+			$sql = "SELECT * FROM `user` WHERE username='$username'";
+				$result = mysql_query($sql) or die(mysql_error());
+				$count = mysql_num_rows($result);
+				if ($count > 0){
+					echo "Username already exists!";
+				} 
+			$query = "INSERT INTO `user` (username, password, email, sex) VALUES ('$username', '$password', '$email', '$sex')";
 			$result = mysql_query($query);
 		if($result){
 			$msg = "Thanks for joining!";
@@ -73,9 +102,9 @@
 					<input name="username" type="text" id="username" maxlength="15" placeholder="username" /></p>
 				<p><label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;E-Mail : </label>
 					<input id="email" type="email" name="email" placeholder="email"/></p>
-				<p><label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Password : </label>
+				<p><label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Password : </label>
 					<input id="password" type="password" name="password" placeholder="password" /> (8 - 15 characters)</p>
-				<p><label>Confirm Password : </label>
+				<p><label>&nbsp;Confirm Password : </label>
 					<input id="cpassword" type="password" name="cpassword" placeholder="confirm" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>	
 				<p><label>Sex : </label>
 					<input id="sex" type="radio" name="sex" /> Male
